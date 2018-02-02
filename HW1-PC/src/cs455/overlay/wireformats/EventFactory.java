@@ -12,82 +12,85 @@ public class EventFactory {
 	
 	//variable to ensure single instance is created for each class
 	private static EventFactory single_Instance = null;
+	private Node mNode = null;
 	
-	private EventFactory(Node node) {}
+	private EventFactory() {}
 	
 	//method to create instance of Eventfactory
-	public static synchronized EventFactory getInstance() {
+	public static EventFactory getInstance() {
 		//create new method to create the instance
+		if (single_Instance == null) {
+			single_Instance = new EventFactory();
+		}
 
 		return single_Instance;
 	}
 	
-	public static synchronized void makeEventFactory(Node node) {
-		if (single_Instance == null) {
-			single_Instance = new EventFactory(node);
-		}
-		getInstance();
+	public void receiveNode(Node node) {
+		mNode = node;
 	}
+
 
 	public void processMessage(byte[] message) throws IOException{
 		//get the type of the message - read first 4 bytes
 		byte type = getType(message);
+		System.out.println("type of message is: " + type);
 		
 		switch(type) {
 		case Protocol.SendRegistration:
 			//SendRegistration
 			Event sendReg = new SendRegistration();
-			node.OnEvent(sendReg);
+			mNode.OnEvent(sendReg);
 			break;
 		case Protocol.RegistryReportsRegistrationStatus:
 			//RegistryReoportsRegistrationStatus
 			Event reportReg = new RegistryReportsRegistrationStatus();
-			node.OnEvent(sendReg);
+			mNode.OnEvent(reportReg);
 			break;
 		case Protocol.SendDeregistration:
 			//SendDeregistration
 			Event sendDereg = new SendDeregistration();
-			node.OnEvent(sendDereg);
+			mNode.OnEvent(sendDereg);
 			break;
 		case Protocol.RegistryReportsDeregistration:
 			//RegistryReportsDeregistrationStatus
-			Event reportDereg = new RegistryReportsDeregistration();
-			node.OnEvent(reportDereg);
+			Event reportDereg = new RegistryReportsDeregistrationStatus();
+			mNode.OnEvent(reportDereg);
 			break;
 		case Protocol.RegistrySendsNodeManifest:
 			//RegistrySendsNodeManifest
 			Event sendMan = new RegistrySendsNodeManifest();
-			node.OnEvent(sendMan);
+			mNode.OnEvent(sendMan);
 			break;
 		case Protocol.NodeReportsOverlaySetupStatus:
 			//NodeReportsOverlaySetup
 			Event OverSetStat = new NodeReportsOverlaySetupStatus();
-			node.OnEvent(OverSetStat);
+			mNode.OnEvent(OverSetStat);
 			break;
 		case Protocol.RegistryRequestsTaskInitiate:
 			//RegistryRequestsTaskInitiate
 			Event reqTask = new RegistryRequestsTaskInitiate();
-			node.OnEvent(reqTask);
+			mNode.OnEvent(reqTask);
 			break;
 		case Protocol.OverlayNodeSendsData:
 			//OverlayNodeSendsData
 			Event nodeData = new OverlayNodeSendsData();
-			node.OnEvent(nodeData);
+			mNode.OnEvent(nodeData);
 			break;
 		case Protocol.OverlayNodeReportsTaskFinished:
 			//OverlayNodeReportsTaskfinished
 			Event taskFinished = new OverlayNodeReportsTaskFinished();
-			node.OnEvent(taskFinished);
+			mNode.OnEvent(taskFinished);
 			break;
 		case Protocol.RegistryRequestsTrafficSummary:
 			//RegistryRequestsTrafficSummary
 			Event requestTraffic = new RegistryRequestsTrafficSummary();
-			node.OnEvent(requestTraffic);
+			mNode.OnEvent(requestTraffic);
 			break;
 		case Protocol.OverlayNodeReportsTrafficSummary:
 			//OverlayNodeReportsTrafficSummary
 			Event reportTraffic = new OverlayNodeReportsTrafficSummary();
-			node.OnEvent(reportTraffic);
+			mNode.OnEvent(reportTraffic);
 			break;
 		default :
 			System.out.println("Invalid Message Type");

@@ -2,19 +2,31 @@ package cs455.overlay.node;
 import java.net.*;
 
 import cs455.overlay.transport.TCPSender;
+import cs455.overlay.transport.TCPServerThread;
 import cs455.overlay.wireformats.Event;
 import cs455.overlay.wireformats.EventFactory;
 import cs455.overlay.wireformats.SendRegistration;
 
 import java.io.*;
 
-public class MessagingNode implements Node, Runnable{
+public class MessagingNode implements Node{
+
+	private EventFactory eventFactory;
 	
-	public EventFactory eventFactory = null;
-	
-	public MessagingNode() {
-		eventFactory = new EventFactory(this);
+	private void Initialize(int port) throws IOException
+	{
+		
+		eventFactory = EventFactory.getInstance();
+		eventFactory.receiveNode(this);
+		
+		TCPServerThread messaging = new TCPServerThread(port, eventFactory);
+		Thread t = new Thread(messaging);
+		t.start();
 	}
+	
+//	public MessagingNode() {
+//		eventFactory = new EventFactory.getInstance();
+//	}
 	
 	//insert either methods  here with the port number and iNetAddress
 	//so that the SendRegister class can access the values and retrieve the information
@@ -23,6 +35,14 @@ public class MessagingNode implements Node, Runnable{
 		String serverName = args[0];
 		
 		int port = Integer.parseInt(args[1]);
+		
+		MessagingNode messageNode = new MessagingNode();
+		try {
+			messageNode.Initialize(port);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		try {
 			System.out.println("Connecting to " + serverName + " on port " + port);
 			Socket client = new Socket(serverName, port);
@@ -62,12 +82,6 @@ public class MessagingNode implements Node, Runnable{
 	@Override
 	public void OnEvent(Event e) {
 		
-		
-	}
-
-	//to be implemented
-	@Override
-	public void run() {
 		
 	}
 
