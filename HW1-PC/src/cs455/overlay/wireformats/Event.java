@@ -6,5 +6,6 @@ public interface Event {
 	
 	public byte getType();
 	public byte[] getBytes() throws IOException;
+	public void unPackBytes(byte[] marshalledBytes) throws IOException;
 	
 }

@@ -3,6 +3,7 @@ package cs455.overlay.wireformats;
 import java.io.*;
 import java.util.Arrays;
 
+import cs455.overlay.node.Registry;
 import cs455.overlay.wireformats.Event;
 
 public class SendRegistration implements Event {
@@ -10,9 +11,15 @@ public class SendRegistration implements Event {
 //	private byte length;
 	private byte[] ipAddr;
 	private int portNum;
-	private byte typeRec;
-	private byte[] ipAddrRec;
-	private int portNumRec;
+	private byte type = Protocol.SendRegistration;
+	
+	public int getPortNumber() {
+		return portNum;
+	}
+	
+	public byte[] getIpAddr() {
+		return ipAddr;
+	}
 	
 	@Override
 	public byte getType() {
@@ -21,12 +28,10 @@ public class SendRegistration implements Event {
 	
 	@Override
 	public byte[] getBytes() throws IOException {
+		
 		byte[] marshalledBytes = null;
 		ByteArrayOutputStream baOutputStream = new ByteArrayOutputStream();
 		DataOutputStream dout = new DataOutputStream(new BufferedOutputStream(baOutputStream));
-		
-		System.out.println(Arrays.toString(ipAddr));
-		System.out.println("portNum = " + portNum);
 		
 		dout.writeByte(getType());
 		dout.writeByte(ipAddr.length);
@@ -54,15 +59,15 @@ public class SendRegistration implements Event {
 		ByteArrayInputStream baInputStream = new ByteArrayInputStream(marshalledBytes);
 		DataInputStream din = new DataInputStream(new BufferedInputStream(baInputStream));
 		
-		typeRec = din.readByte();
+		type = din.readByte();
 		byte lengthRec = din.readByte();
 		byte[] identifyerBytes = new byte[lengthRec];
 		din.readFully(identifyerBytes);
-		ipAddrRec = identifyerBytes;
-		portNumRec = din.readInt();
+		ipAddr = identifyerBytes;
+		portNum = din.readInt();
 		
 		baInputStream.close();
 		din.close();
+		
 	}
-
 }

@@ -6,7 +6,7 @@ public class Protocol {
 	final public static int SendRegistration = 2;
 	final public static int RegistryReportsRegistrationStatus = 3;
 	final public static int SendDeregistration= 4;
-	final public static int RegistryReportsDeregistration = 5;
+	final public static int RegistryReportsDeregistrationStatus = 5;
 	final public static int RegistrySendsNodeManifest = 6;
 	final public static int NodeReportsOverlaySetupStatus = 7;
 	final public static int RegistryRequestsTaskInitiate = 8;
