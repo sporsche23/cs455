@@ -1,7 +1,9 @@
 package cs455.overlay.transport;
 
 import java.net.*;
+import java.util.Arrays;
 
+import cs455.overlay.node.Registry;
 import cs455.overlay.wireformats.EventFactory;
 
 import java.io.*;
@@ -27,7 +29,10 @@ public class TCPReceiverThread implements Runnable{
 				
 				byte[] data = new byte[dataLength];
 				din.readFully(data, 0, dataLength);
-				receive_ef.processMessage(data);
+//				System.out.println("finished processing");
+//				System.out.println(Arrays.toString(data));
+//				EventFactory.getInstance().processMessage(data, );
+//				RegistryServer.sendMessage();
 			}
 			catch (SocketException se) {
 				System.out.println(se.getMessage());
